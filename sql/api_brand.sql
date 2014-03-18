@@ -31,7 +31,7 @@ CREATE TABLE `brand` (
   `url_postback` varchar(2048) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_agency_id` (`agency_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=76 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=78 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -40,7 +40,7 @@ CREATE TABLE `brand` (
 
 LOCK TABLES `brand` WRITE;
 /*!40000 ALTER TABLE `brand` DISABLE KEYS */;
-INSERT INTO `brand` VALUES (2,2,'Jiffy Lube',NULL),(1,1,'Ethereal','www.google.com'),(4,2,'Coke',NULL),(5,2,'Pepsi',NULL),(6,2,'Pep Boys',NULL),(7,3,'Walgreens',NULL),(8,3,'Walmart',NULL),(9,5,'Dish',NULL),(10,6,'E*TRADE',NULL),(11,7,'Chevy',NULL),(12,8,'Expedia',NULL),(13,9,'Realtor.com',NULL),(14,10,'Allstate',NULL),(16,11,'Susquehanna Bank',NULL),(17,12,'Nissan',NULL),(18,13,'Layton Hills Mall',NULL),(19,1,'Applebee\'s',NULL),(20,14,'Nissan',NULL),(21,1,'Google',NULL),(22,29,'Hilton','https://rall.everyscreenmedia.com/visit.gif?p=cl1000926&a=pageview&e=HILTCONV&s=ev10000663&m=1&u=[USER_ID]&d=[DATA_FIELDS]&b=[RANDOM_GENERATOR]'),(71,83,'Henderson Brands',NULL),(70,82,'BrandX',NULL),(69,81,'QA Brand Name',NULL),(67,79,'Acme Co',NULL),(68,80,'BrandX Widgets',NULL),(65,77,'Spinzo',NULL),(72,84,'The Cosmopolitan of Las Vegas',NULL),(73,85,'BrandX Widgets',NULL),(74,86,'CalMHSA',NULL),(75,87,'Army',NULL);
+INSERT INTO `brand` VALUES (2,2,'Jiffy Lube',NULL),(1,1,'Car',''),(4,2,'Coke',NULL),(5,2,'Pepsi',NULL),(6,2,'Pep Boys',NULL),(7,3,'Walgreens',NULL),(8,3,'Walmart',NULL),(9,5,'Dish',NULL),(10,6,'E*TRADE',NULL),(11,7,'Chevy',NULL),(12,8,'Expedia',NULL),(13,9,'Realtor.com',NULL),(14,10,'Allstate',NULL),(16,11,'Susquehanna Bank',NULL),(17,12,'Nissan',NULL),(18,13,'Layton Hills Mall',NULL),(19,1,'Applebee\'s',NULL),(20,14,'Nissan',NULL),(21,1,'Google',NULL),(22,29,'Hilton','https://rall.everyscreenmedia.com/visit.gif?p=cl1000926&a=pageview&e=HILTCONV&s=ev10000663&m=1&u=[USER_ID]&d=[DATA_FIELDS]&b=[RANDOM_GENERATOR]'),(71,83,'Henderson Brands',NULL),(70,82,'BrandX',NULL),(69,81,'QA Brand Name',NULL),(67,79,'Acme Co',NULL),(68,80,'BrandX Widgets',NULL),(65,77,'Spinzo',NULL),(72,84,'The Cosmopolitan of Las Vegas',NULL),(73,85,'BrandX Widgets',NULL),(74,86,'CalMHSA',NULL),(75,87,'Army',NULL),(76,89,'MLS',NULL),(77,92,'Placement Test Brand',NULL);
 /*!40000 ALTER TABLE `brand` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -53,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-01-09 12:47:47
+-- Dump completed on 2014-03-12 16:06:14

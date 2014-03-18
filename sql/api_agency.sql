@@ -26,13 +26,17 @@ DROP TABLE IF EXISTS `agency`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `agency` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `suspended` bit(1) DEFAULT b'0',
+  `suspended` tinyint(4) DEFAULT NULL,
   `agency_name` varchar(255) DEFAULT NULL,
-  `agency_type` enum('Motrixi','Managed','Self_serve','Desk_API') DEFAULT NULL,
+  `agency_type` enum('MOTRIXI','MANAGED','SELF_SERVE','DESK_API') DEFAULT NULL,
   `account_balance` double DEFAULT NULL,
   `url_postback` varchar(2048) DEFAULT NULL,
+  `max_total` double DEFAULT '500',
+  `max_daily` double DEFAULT '100',
+  `allow_auto_fund` tinyint(4) DEFAULT '0',
+  `state` enum('PENDING','ACTIVE') DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=89 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=100 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +45,7 @@ CREATE TABLE `agency` (
 
 LOCK TABLES `agency` WRITE;
 /*!40000 ALTER TABLE `agency` DISABLE KEYS */;
-INSERT INTO `agency` VALUES (1,'\0','Motrixi','Motrixi',10000,'www.todd.com'),(2,'\0','Square One','Managed',1000000,''),(3,'\0','Shop Local',NULL,1000000,NULL),(4,'\0','New Agency',NULL,0,NULL),(5,'\0','Media8',NULL,0,NULL),(6,'\0','Spark Communication',NULL,0,NULL),(7,'\0','Katz360',NULL,0,NULL),(8,'\0','Amobee',NULL,0,NULL),(9,'\0','Essence Digital',NULL,0,NULL),(11,'\0','A-B-C',NULL,0,NULL),(10,'\0','Tapestry',NULL,0,NULL),(12,'\0','commonground',NULL,0,NULL),(13,'\0','lin-digital',NULL,0,NULL),(14,'\0','OMD Digital',NULL,0,NULL),(29,'\0','iProspect',NULL,0,NULL),(83,'\0','Agency H',NULL,10000,''),(79,'\0','The New Agency',NULL,25000,'www.newagency-postback.con'),(80,'\0','Ad Spinner',NULL,100000,''),(77,'\0','Todd Test Agency',NULL,100000,''),(81,'\0','QA Agency Name',NULL,10000,''),(82,'\0','AgencyX',NULL,10000,''),(84,'\0','Rally Point Solutions, LLC.',NULL,50000,''),(85,'\0','Atif Co',NULL,10000,''),(86,'\0','PROXi Digital',NULL,100000,''),(87,'\0','Media Gravity',NULL,200000,''),(88,'\0','Wayne','Motrixi',1000,'');
+INSERT INTO `agency` VALUES (1,0,'Motrixi','MANAGED',10000,'www.todd.com',500,100,0,NULL),(2,0,'Square One','MANAGED',1000000,'',500,100,0,NULL),(3,0,'Shop Local','MANAGED',1000000,NULL,500,100,0,NULL),(4,0,'New Agency','SELF_SERVE',0,NULL,500,100,0,NULL),(5,0,'Media8','MANAGED',0,NULL,500,100,0,NULL),(6,0,'Spark Communication','MANAGED',0,NULL,500,100,0,NULL),(7,0,'Katz360','MANAGED',0,NULL,500,100,0,NULL),(8,0,'Amobee','MANAGED',0,NULL,500,100,0,NULL),(9,0,'Essence Digital','MANAGED',0,NULL,500,100,0,NULL),(11,0,'A-B-C','MANAGED',0,NULL,500,100,0,NULL),(10,0,'Tapestry','MANAGED',0,NULL,500,100,0,NULL),(12,0,'commonground','MANAGED',0,NULL,500,100,0,NULL),(13,0,'lin-digital','SELF_SERVE',0,NULL,500,100,0,NULL),(14,0,'OMD Digital','MANAGED',0,NULL,500,100,0,NULL),(29,0,'iProspect','MANAGED',0,NULL,500,100,0,NULL),(83,0,'Agency H','SELF_SERVE',10000,'',500,100,0,NULL),(79,0,'The New Agency','SELF_SERVE',25000,'www.newagency-postback.con',500,100,0,NULL),(80,0,'Ad Spinner','SELF_SERVE',100000,'',500,100,0,NULL),(77,0,'Todd Test Agency','SELF_SERVE',100000,'',500,100,0,NULL),(81,0,'QA Agency Name','SELF_SERVE',10000,'',500,100,0,NULL),(82,0,'AgencyX','SELF_SERVE',10000,'',500,100,0,NULL),(84,0,'Rally Point Solutions, LLC.','MANAGED',50000,'',500,100,0,NULL),(85,0,'Atif Co','SELF_SERVE',10000,'',500,100,0,NULL),(86,0,'PROXi Digital','MANAGED',100000,'',500,100,0,NULL),(87,0,'Media Gravity','MANAGED',200000,'',500,100,0,NULL),(88,0,'Wayne1','SELF_SERVE',0,'',500,100,0,NULL),(89,0,'Soccer United Marketing','MANAGED',5000,'',500,100,0,NULL),(90,0,'joesfirsttest','SELF_SERVE',100,'',500,100,0,NULL),(91,0,'www1','MANAGED',222,'',2222,222,1,NULL),(92,0,'Placement Test Agency','MANAGED',1000,'',500,100,0,NULL);
 /*!40000 ALTER TABLE `agency` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2014-01-09 12:45:39
+-- Dump completed on 2014-03-14 10:55:57
