@@ -65,7 +65,9 @@ class Flight(BaseModel):
     bid_type = CharField(max_length=5, null=True)
     budget_daily = FloatField(null=True)
     budget_total = FloatField(null=True)
-    campaign = BigIntegerField(null=True, db_column='campaign_id')
+    #campaign = BigIntegerField(null=True, db_column='campaign_id')
+    campaign = ForeignKeyField(Campaign,
+                               db_column='campaign_id', related_name='flights')
     cap = BigIntegerField(null=True)
     cap_on = IntegerField(null=True)
     conversion_value = BigIntegerField(null=True)
@@ -113,6 +115,8 @@ class Flight(BaseModel):
     target_name = CharField(max_length=255, null=True)
     target_os = CharField(max_length=1024, null=True)
     target_toggle = IntegerField(null=True)
+    markdown_margin = FloatField(null=True)
+    markup_multiplier = FloatField(null=True)
     
     def get_exchanges(self):
         return [ex.strip() for ex in self.exchanges.split(',')]
