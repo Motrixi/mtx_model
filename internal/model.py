@@ -42,7 +42,7 @@ class Agent(pw.Model):
         self.config              = conf_blob
         self.date_end            = flight.date_end.strftime('%s')
         self.date_start          = flight.date_start.strftime('%s')
-        self.account = 'account_%d_%d' % (flight.campaign, flight.id)
+        self.account = 'account_%d_%d' % (flight.campaign.id, flight.id)
         if not flight.budget_daily:
             self.daily_budget_micros = 0
         else:
