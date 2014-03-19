@@ -119,7 +119,11 @@ class Flight(BaseModel):
     markup_multiplier = FloatField(null=True)
     
     def get_exchanges(self):
-        return [ex.strip() for ex in self.exchanges.split(',')]
+        if self.exchanges :
+            return [ex.strip() for ex in self.exchanges.split(',')]
+        else :
+            return []
+		
 
     class Meta:
         db_table = 'flight'
