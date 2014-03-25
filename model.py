@@ -123,6 +123,13 @@ class Flight(BaseModel):
             return [ex.strip() for ex in self.exchanges.split(',')]
         else :
             return []
+
+    def get_languages(self):
+        if self.exchanges :
+            return [
+                lan.strip() for lan in self.demo_language.split(',')]
+        else :
+            return []
 		
 
     class Meta:
