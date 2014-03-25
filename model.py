@@ -130,7 +130,14 @@ class Flight(BaseModel):
                 lan.strip() for lan in self.demo_language.split(',')]
         else :
             return []
-		
+    
+    def get_categories(self):
+        if self.target_category :
+            return [
+                cat.strip() 
+                for cat in self.target_category.split(',')]
+        else:
+            return []
 
     class Meta:
         db_table = 'flight'
