@@ -139,6 +139,30 @@ class Flight(BaseModel):
         else:
             return []
 
+    def get_yobs(self):
+        if self.demo_age:
+            return [
+                age.strip()
+                for age in self.demo_age.split(',')]
+        else:
+            return []
+
+    def get_genders(self):
+        if self.demo_gender:
+            return [
+                gen.strip()
+                for gen in self.demo_gender.split(',')]
+        else:
+            return []
+
+    def get_oss(self):
+        if self.target_os:
+            return [
+                os.strip()
+                for os in self.target_os.split(',')]
+        else:
+            return []
+
     class Meta:
         db_table = 'flight'
 
