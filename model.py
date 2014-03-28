@@ -1,6 +1,7 @@
 from peewee import *
 import peewee as pw
 import sys
+import datetime
 
 sys.path.append('../')
 
@@ -80,7 +81,7 @@ class Flight(BaseModel):
     demo_edu = CharField(max_length=45, null=True)
     demo_ethnicity = CharField(max_length=1024, null=True)
     demo_gender = CharField(max_length=45, null=True)
-    demo_hhi = FloatField(null=True)
+    demo_hhi = CharField(max_length=45, null=True)
     demo_language = CharField(max_length=1024, null=True)
     demo_pets = CharField(max_length=45, null=True)
     demo_relationship = CharField(max_length=45, null=True)
@@ -140,12 +141,39 @@ class Flight(BaseModel):
             return []
 
     def get_yobs(self):
-        if self.demo_age:
-            return [
-                age.strip()
-                for age in self.demo_age.split(',')]
-        else:
+
+        def get_end(pair):
+            try:
+                return pair[1]
+            except IndexError:
+                return '100'
+
+        if not self.demo_age:
             return []
+        ages = [
+                { 
+                    'begin' : age.strip().split('-')[0].strip('+'),
+                    'end'   : get_end(age.strip().split('-'))
+                }
+                for age in self.demo_age.split(',') 
+                    if age.strip().lower() != 'unspecified'
+        ]
+        current_year = datetime.datetime.now().year
+        age_list = []
+        for age_range in ages :
+            age_list.extend(
+                range(
+                    int(age_range['begin']), 
+                    int(age_range['end']) + 1)
+            )
+        yobs = [current_year - age for age in age_list]
+        exclude_if_not_present = True
+
+        for age in self.demo_age.split(','):
+            if age.strip().lower() == 'unspecified':
+                exclude_if_not_present = False
+
+        return exclude_if_not_present , yobs
 
     def get_genders(self):
         if self.demo_gender:
