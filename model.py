@@ -249,6 +249,7 @@ class IABSubCategory(BaseModel):
                 [ cat.cat_code for cat in IABSubCategory.select().where(
                     fn.Substr(IABSubCategory.cat_code, 1, len(a_cat)) == a_cat)]
             )
+        categ_list.extend(cats)
         return categ_list
 
 if __name__ == '__main__' :
