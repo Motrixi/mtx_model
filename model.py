@@ -149,7 +149,7 @@ class Flight(BaseModel):
                 return '100'
 
         if not self.demo_age:
-            return []
+            return True, []
         ages = [
                 { 
                     'begin' : age.strip().split('-')[0].strip('+'),
@@ -176,12 +176,20 @@ class Flight(BaseModel):
         return exclude_if_not_present , yobs
 
     def get_genders(self):
-        if self.demo_gender:
-            return [
-                gen.strip()
-                for gen in self.demo_gender.split(',')]
-        else:
-            return []
+        if not self.demo_gender:
+            return True, []
+        exclude_if_not_present = True
+        genders = [ gen.strip().lower()
+                    for gen in self.demo_gender.split(',')]
+        gens = []
+        for gen in genders:
+            if gen == 'male':
+                gens.append('M')
+            elif gen == 'female':
+                gens.append('F')
+            elif gen == 'other':
+                exclude_if_not_present = False
+        return exclude_if_not_present, gens
 
     def get_oss(self):
         if self.target_os:
