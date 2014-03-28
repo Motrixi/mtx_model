@@ -231,7 +231,28 @@ class Exchange(BaseModel):
     class Meta:
         db_table = 'exchange'
 
+class IABSubCategory(BaseModel):
+    id = BigIntegerField(primary_key=True)
+    cat_code = CharField(max_length=50, null=True)
+    cat_name = CharField(max_length=255, null=True)
+    cat_subcat = IntegerField(null=True)
+
+    class Meta:
+        db_table = 'iabcat_full'
+
+    @classmethod
+    def get_subcats(cls, cats):
+        categ_list = []
+        for cat in cats :
+            a_cat = '%s-' % cat
+            categ_list.extend(
+                [ cat.cat_code for cat in IABSubCategory.select().where(
+                    fn.Substr(IABSubCategory.cat_code, 1, len(a_cat)) == a_cat)]
+            )
+        return categ_list
+
 if __name__ == '__main__' :
-    print Creative.select().get()
-    print Flight.select().get()
-    print Campaign.select().get()
+    #print Creative.select().get()
+    #print Flight.select().get()
+    #print Campaign.select().get()
+    print IABSubCategory.get_subcats(['IAB1','IAB2'])
