@@ -79,7 +79,7 @@ class Flight(BaseModel):
     demo_children = CharField(max_length=45, null=True)
     demo_edu = CharField(max_length=45, null=True)
     demo_ethnicity = CharField(max_length=1024, null=True)
-    demo_gender = CharField(max_length=3, null=True)
+    demo_gender = CharField(max_length=45, null=True)
     demo_hhi = FloatField(null=True)
     demo_language = CharField(max_length=1024, null=True)
     demo_pets = CharField(max_length=45, null=True)
