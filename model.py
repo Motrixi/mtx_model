@@ -151,6 +151,8 @@ class Flight(BaseModel):
 
         if not self.demo_age:
             return True, []
+        elif self.demo_age.upper() == 'ALL':
+            return True, []
         ages = [
                 { 
                     'begin' : age.strip().split('-')[0].strip('+'),
