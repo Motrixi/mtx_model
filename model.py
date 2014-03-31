@@ -118,6 +118,7 @@ class Flight(BaseModel):
     target_toggle = IntegerField(null=True)
     markdown_margin = FloatField(null=True)
     markup_multiplier = FloatField(null=True)
+    campaign_category = CharField(max_length=255, null=True)
     
     def get_exchanges(self):
         if self.exchanges :
