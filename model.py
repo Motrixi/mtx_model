@@ -202,6 +202,35 @@ class Flight(BaseModel):
         else:
             return []
 
+    def get_locations(self, all_countries, transformations):
+        if not self.geo_country:
+            return []
+        countries = [
+            c.strip()
+            for c in self.geo_country.split(',')
+        ]
+        if countries[0] == 'ALL':
+            countries = all_countries
+        # expand country list with transformation
+        ext = []
+        for c in countries:
+            try :
+                ext.append(transformations[c])
+            except KeyError:
+                continue
+        countries.extend(ext)
+        # go through countries and add states is the country is US
+        if self.geo_state and 'US' in countries:
+            states = [s.strip() for s in self.geo_state.split(',')]
+            if states[0].upper() != 'ALL':
+                countries.remove('US')
+                countries.remove('USA')
+                for st in states:
+                    countries.append('US:%s' % st)
+                    countries.append('USA:%s' % st)
+            
+        return countries
+        
     class Meta:
         db_table = 'flight'
 
@@ -259,4 +288,9 @@ if __name__ == '__main__' :
     #print Creative.select().get()
     #print Flight.select().get()
     #print Campaign.select().get()
-    print IABSubCategory.get_subcats(['IAB1','IAB2'])
+    #print IABSubCategory.get_subcats(['IAB1','IAB2'])
+    print Flight.get(Flight.id==398).get_locations(['US','CA','UK'], {
+        'US':'USA',
+        'CA':'CAN',
+        'UK':'UKG'
+    })
