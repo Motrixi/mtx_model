@@ -219,7 +219,7 @@ class Flight(BaseModel):
             except KeyError:
                 continue
         countries.extend(ext)
-        # go through countries and add states is the country is US
+        # go through countries and add states if the country is US
         if self.geo_state and 'US' in countries:
             states = [s.strip() for s in self.geo_state.split(',')]
             if states[0].upper() != 'ALL':
@@ -228,7 +228,6 @@ class Flight(BaseModel):
                 for st in states:
                     countries.append('US:%s' % st)
                     countries.append('USA:%s' % st)
-            
         return countries
         
     class Meta:
