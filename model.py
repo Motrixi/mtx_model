@@ -211,23 +211,24 @@ class Flight(BaseModel):
         ]
         if countries[0] == 'ALL':
             countries = all_countries
+        countries = ['^%s' % c for c in countries]
         # expand country list with transformation
         ext = []
         for c in countries:
             try :
-                ext.append(transformations[c])
+                ext.append('^%s' % transformations[c[1:]])
             except KeyError:
                 continue
         countries.extend(ext)
         # go through countries and add states if the country is US
-        if self.geo_state and 'US' in countries:
+        if self.geo_state and '^US' in countries:
             states = [s.strip() for s in self.geo_state.split(',')]
             if states[0].upper() != 'ALL':
-                countries.remove('US')
-                countries.remove('USA')
+                countries.remove('^US')
+                countries.remove('^USA')
                 for st in states:
-                    countries.append('US:%s' % st)
-                    countries.append('USA:%s' % st)
+                    countries.append('^US:%s' % st)
+                    countries.append('^USA:%s' % st)
         return countries
         
     class Meta:
@@ -288,8 +289,5 @@ if __name__ == '__main__' :
     #print Flight.select().get()
     #print Campaign.select().get()
     #print IABSubCategory.get_subcats(['IAB1','IAB2'])
-    print Flight.get(Flight.id==398).get_locations(['US','CA','UK'], {
-        'US':'USA',
-        'CA':'CAN',
-        'UK':'UKG'
-    })
+    print Flight.get(Flight.id==398).get_locations(settings.COUNTRIES_ALL,
+                                                   settings.COUNTRIES_ALPHA2_TO_ALPHA3)
