@@ -231,6 +231,16 @@ class Flight(BaseModel):
                     countries.append('^USA:%s' % st)
         return countries
         
+    def get_zips(self):
+        if not self.geo_zip:
+            return []
+        countries = [c.strip().upper() for c in self.geo_country.split(',')]
+        if 'US' not in countries :
+            if 'ALL' not in countries:
+                return []
+        zips = [z.strip().upper() for z in self.geo_zip.split(',')]
+        return zips
+        
     class Meta:
         db_table = 'flight'
 
