@@ -241,6 +241,17 @@ class Flight(BaseModel):
         zips = [z.strip().upper() for z in self.geo_zip.split(',')]
         return zips
         
+
+    def get_dmas(self):
+        if not self.geo_dma:
+            return []
+        countries = [c.strip().upper() for c in self.geo_country.split(',')]
+        if 'US' not in countries :
+            if 'ALL' not in countries:
+                return []
+        dma = [d.strip().upper() for d in self.geo_dma.split(',')]
+        return dma
+
     class Meta:
         db_table = 'flight'
 
@@ -299,5 +310,4 @@ if __name__ == '__main__' :
     #print Flight.select().get()
     #print Campaign.select().get()
     #print IABSubCategory.get_subcats(['IAB1','IAB2'])
-    print Flight.get(Flight.id==398).get_locations(settings.COUNTRIES_ALL,
-                                                   settings.COUNTRIES_ALPHA2_TO_ALPHA3)
+    print Flight.get(Flight.id==398).get_dmas()
