@@ -2,6 +2,7 @@ from peewee import *
 import peewee as pw
 import sys
 import datetime
+import re
 
 sys.path.append('../')
 
@@ -251,6 +252,25 @@ class Flight(BaseModel):
                 return []
         dma = [d.strip().upper() for d in self.geo_dma.split(',')]
         return dma
+
+    def get_domains(self):
+        if not self.allow_block:
+            return True, []
+        
+        p = re.compile(
+                r'[a-zA-Z\d-]{,63}(\.[a-zA-Z\d-]{,63})+') 
+        def is_domain(dom):
+            if p.match(dom):
+                return True
+            return False  
+        
+        domains = [
+            d.strip() 
+                for d in self.allow_block.split(',') 
+                if is_domain(d.strip())]
+        
+        factor = lambda x : True if x == 'ALLOW' else False
+        return factor(self.allow_block_factor), domains
 
     class Meta:
         db_table = 'flight'
