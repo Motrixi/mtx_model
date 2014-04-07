@@ -2,6 +2,8 @@ from peewee import *
 import peewee as pw
 import sys
 import datetime
+import re
+import urllib
 
 sys.path.append('../')
 
@@ -202,6 +204,94 @@ class Flight(BaseModel):
         else:
             return []
 
+    def get_locations(self, all_countries, transformations):
+        if not self.geo_country:
+            return []
+        countries = [
+            c.strip()
+            for c in self.geo_country.split(',')
+        ]
+        if countries[0] == 'ALL':
+            countries = all_countries
+        countries = ['^%s' % c for c in countries]
+        # expand country list with transformation
+        ext = []
+        for c in countries:
+            try :
+                ext.append('^%s' % transformations[c[1:]])
+            except KeyError:
+                continue
+        countries.extend(ext)
+        # go through countries and add states if the country is US
+        if self.geo_state and '^US' in countries:
+            states = [s.strip() for s in self.geo_state.split(',')]
+            if states[0].upper() != 'ALL':
+                countries.remove('^US')
+                countries.remove('^USA')
+                for st in states:
+                    countries.append('^US:%s' % st)
+                    countries.append('^USA:%s' % st)
+        return countries
+        
+    def get_zips(self):
+        if not self.geo_zip:
+            return []
+        countries = [c.strip().upper() for c in self.geo_country.split(',')]
+        if 'US' not in countries :
+            if 'ALL' not in countries:
+                return []
+        zips = [z.strip().upper() for z in self.geo_zip.split(',')]
+        return zips
+        
+
+    def get_dmas(self):
+        if not self.geo_dma:
+            return []
+        countries = [c.strip().upper() for c in self.geo_country.split(',')]
+        if 'US' not in countries :
+            if 'ALL' not in countries:
+                return []
+        dma = [d.strip().upper() for d in self.geo_dma.split(',')]
+        return dma
+
+    def get_domains(self):
+        if not self.allow_block:
+            return True, []
+        
+        p = re.compile(
+                r'[a-zA-Z\d-]{,63}(\.[a-zA-Z\d-]{,63})+') 
+        def is_domain(dom):
+            if p.match(dom):
+                return True
+            return False  
+        
+        domains = [
+            urllib.quote(d.strip().encode('utf-8'))
+                for d in self.allow_block.split(',') 
+                if is_domain(d.strip())]
+        
+        factor = lambda x : True if x == 'ALLOW' else False
+        return factor(self.allow_block_factor), domains
+
+    def get_apps(self):
+        if not self.allow_block:
+            return True, []
+
+        p = re.compile(
+                r'[a-zA-Z\d-]{,63}(\.[a-zA-Z\d-]{,63})+') 
+        def is_domain(dom):
+            if p.match(dom):
+                return True
+            return False  
+        
+        apps = [
+            urllib.quote(d.strip().encode('utf-8'))
+                for d in self.allow_block.split(',') 
+                if not is_domain(d.strip())]
+        
+        factor = lambda x : True if x == 'ALLOW' else False
+        return factor(self.allow_block_factor), apps
+
     class Meta:
         db_table = 'flight'
 
@@ -259,4 +349,6 @@ if __name__ == '__main__' :
     #print Creative.select().get()
     #print Flight.select().get()
     #print Campaign.select().get()
-    print IABSubCategory.get_subcats(['IAB1','IAB2'])
+    #print IABSubCategory.get_subcats(['IAB1','IAB2'])
+    print Flight.get(Flight.id==398).get_domains()
+    print Flight.get(Flight.id==398).get_apps()
