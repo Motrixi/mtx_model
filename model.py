@@ -3,6 +3,7 @@ import peewee as pw
 import sys
 import datetime
 import re
+import urllib
 
 sys.path.append('../')
 
@@ -265,12 +266,31 @@ class Flight(BaseModel):
             return False  
         
         domains = [
-            d.strip() 
+            urllib.quote(d.strip().encode('utf-8'))
                 for d in self.allow_block.split(',') 
                 if is_domain(d.strip())]
         
         factor = lambda x : True if x == 'ALLOW' else False
         return factor(self.allow_block_factor), domains
+
+    def get_apps(self):
+        if not self.allow_block:
+            return True, []
+
+        p = re.compile(
+                r'[a-zA-Z\d-]{,63}(\.[a-zA-Z\d-]{,63})+') 
+        def is_domain(dom):
+            if p.match(dom):
+                return True
+            return False  
+        
+        apps = [
+            urllib.quote(d.strip().encode('utf-8'))
+                for d in self.allow_block.split(',') 
+                if not is_domain(d.strip())]
+        
+        factor = lambda x : True if x == 'ALLOW' else False
+        return factor(self.allow_block_factor), apps
 
     class Meta:
         db_table = 'flight'
@@ -330,4 +350,5 @@ if __name__ == '__main__' :
     #print Flight.select().get()
     #print Campaign.select().get()
     #print IABSubCategory.get_subcats(['IAB1','IAB2'])
-    print Flight.get(Flight.id==398).get_dmas()
+    print Flight.get(Flight.id==398).get_domains()
+    print Flight.get(Flight.id==398).get_apps()
