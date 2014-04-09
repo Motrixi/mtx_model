@@ -131,7 +131,7 @@ class Flight(BaseModel):
     def get_languages(self):
         if self.exchanges :
             return [
-                lan.strip() for lan in self.demo_language.split(',')]
+                lan.strip().upper() for lan in self.demo_language.split(',')]
         else :
             return []
     
@@ -199,7 +199,7 @@ class Flight(BaseModel):
     def get_oss(self):
         if self.target_os:
             return [
-                os.strip()
+                os.strip().lower()
                 for os in self.target_os.split(',')]
         else:
             return []
