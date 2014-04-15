@@ -32,7 +32,8 @@ class Agent(pw.Model):
     last_budget_run      = pw.BigIntegerField(default=0)
     spent_budget_micros  = pw.BigIntegerField(default=0)
     state                = pw.IntegerField(default=STOPPED_STATE)
-    account              = pw.CharField(max_length=40)  
+    account              = pw.CharField(max_length=40)
+    pacing               = pw.CharField(max_length=20, default="asap")
     # TODO impression daily + total ?
     class Meta:
         database = database
@@ -43,6 +44,10 @@ class Agent(pw.Model):
         self.date_end            = flight.date_end.strftime('%s')
         self.date_start          = flight.date_start.strftime('%s')
         self.account = 'account_%d_%d' % (flight.campaign.id, flight.id)
+        if not flight.delivery_pace : # if null assume asap
+            self.pacing = "asap"
+        else :
+            self.pacing =  flight.delivery_pace.lower() # i dont like uppercase
         if not flight.budget_daily:
             self.daily_budget_micros = 0
         else:
