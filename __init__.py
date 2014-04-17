@@ -1,2 +1,2 @@
-from model import *
+from alchemy_model import *
 
