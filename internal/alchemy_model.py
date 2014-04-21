@@ -85,4 +85,10 @@ class AccountError(Base):
 
 
 if __name__ == '__main__':
-    pass
+    
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker
+
+    engine = create_engine(
+                'sqlite:///%s' % settings.INTERNAL_DB_PATH, echo=True)
+    Base.metadata.create_all(engine) 
