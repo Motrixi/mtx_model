@@ -34,6 +34,7 @@ class Agent(Base):
     spent_budget_micros  = Column(BigInteger,   nullable=False, default=0)
     state                = Column(Integer,      nullable=False, default=STOPPED_STATE)
     account              = Column(String,       nullable=False)
+    pacing               = Column(String,       nullable=False, default='asap')
     # TODO impression daily + total ?
 
     def initialize(self, flight, conf_blob):
@@ -41,6 +42,10 @@ class Agent(Base):
         self.date_end            = flight.date_end.strftime('%s')
         self.date_start          = flight.date_start.strftime('%s')
         self.account = 'account_%d_%d' % (flight.campaign.id, flight.id)
+        if not flight.delivery_pace:
+            self.pacing = 'asap'
+        else:
+            self.pacing = flight.delivery_pace.lower()
         if not flight.budget_daily:
             self.daily_budget_micros = 0
         else:
