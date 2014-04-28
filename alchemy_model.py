@@ -344,7 +344,7 @@ if __name__ == '__main__':
 
     engine = create_engine(
                 'mysql://root:pepe123@localhost/api?charset=utf8', echo=True)
-    Session = sessionmaker(bind=engine)
+    Session = sessionmaker(bind=engine, autocommit=True)
     session = Session()
 
     f = session.query(Flight).filter(Flight.id == 398).first()
