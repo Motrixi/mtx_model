@@ -264,7 +264,9 @@ class Flight(Base):
             urllib.quote(d.strip().encode('utf-8'))
                 for d in self.allow_block.split(',') 
                 if is_domain(d.strip())]
-        
+
+        extended = ['http%%3A%%2F%%2F%s' % d for d in domains]
+        domains.extend(extended)
         factor = lambda x : True if x == 'ALLOW' else False
         return factor(self.allow_block_factor), domains
 
