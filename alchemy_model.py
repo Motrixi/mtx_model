@@ -125,8 +125,10 @@ class Flight(Base):
 
     def get_languages(self):
         if self.demo_language :
-            return [
+            langs = [
                 lan.strip().upper() for lan in self.demo_language.split(',')]
+            langs.extend([lan.lower() for lan in langs])
+            return langs
         else :
             return []
 
