@@ -340,8 +340,9 @@ class IABSubCategory(Base):
 class Event(Base):
     __tablename__ = 'event'
 
-    IMPRESSION_CAP_TOTAL  = 1
-    IMPRESSION_CAP_DAILY  = 2
+    IMPRESSION_CAP_TOTAL   = 1
+    IMPRESSION_CAP_DAILY   = 2
+    IMPRESSION_CAP_RELEASE = 3
 
     id                 = Column(Integer, primary_key=True, autoincrement=True)
     type               = Column(Integer,      nullable=True)
