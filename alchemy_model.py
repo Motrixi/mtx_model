@@ -56,6 +56,9 @@ class Campaign(Base):
 class Flight(Base):
     __tablename__ = 'flight'
     
+    BUDGET_TYPE_IMPRESSION = 'impression'
+    BUDGET_TYPE_BUDGET     = 'budget'
+
     id                 = Column(Integer, primary_key=True, autoincrement=True)
     bid_amount         = Column(Float,                  nullable=True)
     allow_block        = Column(Text,                   nullable=True)
@@ -112,6 +115,7 @@ class Flight(Base):
     markdown_margin    = Column(Float,                  nullable=True)
     markup_multiplier  = Column(Float,                  nullable=True)
     campaign_category  = Column(String(length=255),     nullable=True)
+    budget_type        = Column(String(length=25),      nullable=True)
 
     campaign_id        = Column(Integer, ForeignKey('campaign.id'))
     campaign           = relationship("Campaign", 
@@ -289,6 +293,12 @@ class Flight(Base):
         factor = lambda x : True if x == 'ALLOW' else False
         return factor(self.allow_block_factor), apps
 
+
+    def update_budget(self):
+        if self.budget_type == Flight.BUDGET_TYPE_BUDGET:
+            return
+        self.budget_total = (self.impression_total * self.bid_amount) / 1000;
+        self.budget_daily = (self.impression_daily * self.bid_amount) / 1000;
 
 
 class Creative(Base):
