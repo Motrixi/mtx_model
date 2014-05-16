@@ -19,18 +19,18 @@ Base = declarative_base()
 class Agency(Base):
     __tablename__ = 'agency'
     id                 = Column(Integer, primary_key=True, autoincrement=True)
-    account_balance    = Column(Float,        nullable=True)
-    agency_name        = Column(String,       nullable=True)
-    agency_type        = Column(String,       nullable=True)
-    suspended          = Column(Boolean,      nullable=True)
-    url_postback       = Column(String,       nullable=True)
+    account_balance    = Column(Float,                    nullable=True)
+    agency_name        = Column(String(length=255),       nullable=True)
+    agency_type        = Column(String(length=255),       nullable=True)
+    suspended          = Column(Boolean,                  nullable=True)
+    url_postback       = Column(String(length=2048),      nullable=True)
 
 
 class Brand(Base):
     __tablename__ = 'brand'
     id                 = Column(Integer, primary_key=True, autoincrement=True)
-    brand_name         = Column(String,       nullable=True)
-    url_postback       = Column(String,       nullable=True)
+    brand_name         = Column(String(length=255),       nullable=True)
+    url_postback       = Column(String(length=2048),      nullable=True)
 
     agency_id          = Column(Integer, ForeignKey('agency.id'))
     agency             = relationship("Agency", 
@@ -39,14 +39,14 @@ class Brand(Base):
 class Campaign(Base):
     __tablename__ = 'campaign'
     id                 = Column(Integer, primary_key=True, autoincrement=True)
-    budget_daily       = Column(Float,        nullable=True)
-    budget_total       = Column(Float,        nullable=True)
-    campaign_name      = Column(String,       nullable=True)
-    date_end           = Column(DATETIME,     nullable=True)
-    date_start         = Column(DATETIME,     nullable=True)
-    impression_daily   = Column(BigInteger,   nullable=True)
-    impression_total   = Column(BigInteger,   nullable=True)
-    state              = Column(String,       nullable=True)
+    budget_daily       = Column(Float,                    nullable=True)
+    budget_total       = Column(Float,                    nullable=True)
+    campaign_name      = Column(String(length=255),       nullable=True)
+    date_end           = Column(DATETIME,                 nullable=True)
+    date_start         = Column(DATETIME,                 nullable=True)
+    impression_daily   = Column(BigInteger,               nullable=True)
+    impression_total   = Column(BigInteger,               nullable=True)
+    state              = Column(String(length=255),       nullable=True)
 
     brand_id           = Column(Integer, ForeignKey('brand.id'))
     brand              = relationship("Brand", 
@@ -56,62 +56,66 @@ class Campaign(Base):
 class Flight(Base):
     __tablename__ = 'flight'
     
+    BUDGET_TYPE_IMPRESSION = 'impression'
+    BUDGET_TYPE_BUDGET     = 'budget'
+
     id                 = Column(Integer, primary_key=True, autoincrement=True)
-    bid_amount         = Column(Float,        nullable=True)
-    allow_block        = Column(Text,         nullable=True)
-    allow_block_factor = Column(String,       nullable=True)
-    bid_type           = Column(String,       nullable=True)
-    budget_daily       = Column(Float,        nullable=True)
-    budget_total       = Column(Float,        nullable=True)
-    cap                = Column(BigInteger,   nullable=True)
-    cap_on             = Column(Integer,      nullable=True)
-    conversion_value   = Column(BigInteger,   nullable=True)
-    date_end           = Column(DATETIME,     nullable=True)
-    date_start         = Column(DATETIME,     nullable=True)
-    day_parting        = Column(Integer,      nullable=True)
-    delivery_pace      = Column(String,       nullable=True)
-    demo_age           = Column(String,       nullable=True)
-    demo_children      = Column(String,       nullable=True)
-    demo_edu           = Column(String,       nullable=True)
-    demo_ethnicity     = Column(String,       nullable=True)
-    demo_gender        = Column(String,       nullable=True)
-    demo_hhi           = Column(String,       nullable=True)
-    demo_language      = Column(String,       nullable=True)
-    demo_pets          = Column(String,       nullable=True)
-    demo_relationship  = Column(String,       nullable=True)
-    demo_vehicle       = Column(String,       nullable=True)
-    dp_1               = Column(String,       nullable=True)
-    dp_2               = Column(String,       nullable=True)
-    dp_3               = Column(String,       nullable=True)
-    dp_4               = Column(String,       nullable=True)
-    dp_5               = Column(String,       nullable=True)
-    dp_6               = Column(String,       nullable=True)
-    dp_7               = Column(String,       nullable=True)
-    exchanges          = Column(String,       nullable=True)
-    flight_name        = Column(String,       nullable=True)
-    geo_country        = Column(String,       nullable=True)
-    geo_dma            = Column(String,       nullable=True)
-    geo_state          = Column(String,       nullable=True)
-    geo_zip            = Column(Text,         nullable=True)
-    impression_daily   = Column(BigInteger,   nullable=True)
-    impression_total   = Column(BigInteger,   nullable=True)
-    intent             = Column(String,       nullable=True)
-    lat_long           = Column(String,       nullable=True)
-    pixel              = Column(Text,         nullable=True)
-    pixel_type         = Column(String,       nullable=True)
-    radius             = Column(Float,        nullable=True)
-    segment_clickers   = Column(Integer,      nullable=True)
-    segment_converters = Column(Integer,      nullable=True)
-    state              = Column(String,       nullable=True)
-    target_carrier     = Column(String,       nullable=True)
-    target_category    = Column(String,       nullable=True)
-    target_environment = Column(String,       nullable=True)
-    target_name        = Column(String,       nullable=True)
-    target_os          = Column(String,       nullable=True)
-    target_toggle      = Column(String,       nullable=True)
-    markdown_margin    = Column(Float,        nullable=True)
-    markup_multiplier  = Column(Float,        nullable=True)
-    campaign_category  = Column(String,       nullable=True)
+    bid_amount         = Column(Float,                  nullable=True)
+    allow_block        = Column(Text,                   nullable=True)
+    allow_block_factor = Column(String(length=255),     nullable=True)
+    bid_type           = Column(String(length=5),       nullable=True)
+    budget_daily       = Column(Float,                  nullable=True)
+    budget_total       = Column(Float,                  nullable=True)
+    cap                = Column(BigInteger,             nullable=True)
+    cap_on             = Column(Integer,                nullable=True)
+    conversion_value   = Column(BigInteger,             nullable=True)
+    date_end           = Column(DATETIME,               nullable=True)
+    date_start         = Column(DATETIME,               nullable=True)
+    day_parting        = Column(Integer,                nullable=True)
+    delivery_pace      = Column(String(length=255),     nullable=True)
+    demo_age           = Column(String(length=45),      nullable=True)
+    demo_children      = Column(String(length=45),      nullable=True)
+    demo_edu           = Column(String(length=45),      nullable=True)
+    demo_ethnicity     = Column(String(length=1024),    nullable=True)
+    demo_gender        = Column(String(length=45),      nullable=True)
+    demo_hhi           = Column(String(length=45),      nullable=True)
+    demo_language      = Column(String(length=45),      nullable=True)
+    demo_pets          = Column(String(length=45),      nullable=True)
+    demo_relationship  = Column(String(length=45),      nullable=True)
+    demo_vehicle       = Column(String(length=45),      nullable=True)
+    dp_1               = Column(String(length=255),     nullable=True)
+    dp_2               = Column(String(length=255),     nullable=True)
+    dp_3               = Column(String(length=255),     nullable=True)
+    dp_4               = Column(String(length=255),     nullable=True)
+    dp_5               = Column(String(length=255),     nullable=True)
+    dp_6               = Column(String(length=255),     nullable=True)
+    dp_7               = Column(String(length=255),     nullable=True)
+    exchanges          = Column(String(length=1024),    nullable=True)
+    flight_name        = Column(String(length=255),     nullable=True)
+    geo_country        = Column(String(length=1024),    nullable=True)
+    geo_dma            = Column(Text,                   nullable=True)
+    geo_state          = Column(String(length=1024),    nullable=True)
+    geo_zip            = Column(Text,                   nullable=True)
+    impression_daily   = Column(BigInteger,             nullable=True)
+    impression_total   = Column(BigInteger,             nullable=True)
+    intent             = Column(Text,                   nullable=True)
+    lat_long           = Column(Text,                   nullable=True)
+    pixel              = Column(Text,                   nullable=True)
+    pixel_type         = Column(String(length=255),     nullable=True)
+    radius             = Column(Float,                  nullable=True)
+    segment_clickers   = Column(Integer,                nullable=True)
+    segment_converters = Column(Integer,                nullable=True)
+    state              = Column(String(length=255),     nullable=True)
+    target_carrier     = Column(String(length=1024),    nullable=True)
+    target_category    = Column(String(length=1024),    nullable=True)
+    target_environment = Column(String(length=255),     nullable=True)
+    target_name        = Column(String(length=255),     nullable=True)
+    target_os          = Column(String(length=255),     nullable=True)
+    target_toggle      = Column(Integer,                nullable=True)
+    markdown_margin    = Column(Float,                  nullable=True)
+    markup_multiplier  = Column(Float,                  nullable=True)
+    campaign_category  = Column(String(length=255),     nullable=True)
+    budget_type        = Column(String(length=25),      nullable=True)
 
     campaign_id        = Column(Integer, ForeignKey('campaign.id'))
     campaign           = relationship("Campaign", 
@@ -292,23 +296,29 @@ class Flight(Base):
         return factor(self.allow_block_factor), apps
 
 
+    def update_budget(self):
+        if self.budget_type == Flight.BUDGET_TYPE_BUDGET:
+            return
+        self.budget_total = (self.impression_total * self.bid_amount) / 1000;
+        self.budget_daily = (self.impression_daily * self.bid_amount) / 1000;
+
 
 class Creative(Base):
     __tablename__ = 'creative'
     id                 = Column(Integer, primary_key=True, autoincrement=True)
-    ad_tag             = Column(Text,         nullable=True)
-    creative_height    = Column(Integer,      nullable=True)
-    creative_name      = Column(String,       nullable=True)
-    creative_width     = Column(Integer,      nullable=True)
-    domain_destination = Column(String,       nullable=True)
-    url_destination    = Column(String,       nullable=True)
-    url_icon           = Column(String,       nullable=True)
-    url_image          = Column(String,       nullable=True)
-    url_image_preview  = Column(String,       nullable=True)
-    url_imp            = Column(String,       nullable=True)
-    url_media          = Column(String,       nullable=True)
-    url_postback       = Column(String,       nullable=True)
-    state              = Column(String,       nullable=True)
+    ad_tag             = Column(Text,                      nullable=True)
+    creative_height    = Column(Integer,                   nullable=True)
+    creative_name      = Column(String(length=255),        nullable=True)
+    creative_width     = Column(Integer,                   nullable=True)
+    domain_destination = Column(String(length=255),        nullable=True)
+    url_destination    = Column(String(length=2048),       nullable=True)
+    url_icon           = Column(String(length=2048),       nullable=True)
+    url_image          = Column(String(length=2048),       nullable=True)
+    url_image_preview  = Column(String(length=2048),       nullable=True)
+    url_imp            = Column(String(length=2048),       nullable=True)
+    url_media          = Column(String(length=2048),       nullable=True)
+    url_postback       = Column(String(length=2048),       nullable=True)
+    state              = Column(String(length=255),        nullable=True)
 
     flight_id          = Column(Integer, ForeignKey('flight.id'))
     flight             = relationship("Flight", 
@@ -318,14 +328,14 @@ class Creative(Base):
 class Exchange(Base):
     __tablename__ = 'exchange'
     id                 = Column(Integer, primary_key=True, autoincrement=True)
-    name               = Column(String,       nullable=False)
+    name               = Column(String(length=50),     nullable=True)
 
 class IABSubCategory(Base):
     __tablename__ = 'iabcat_full'
     id                 = Column(Integer, primary_key=True, autoincrement=True)
-    cat_code           = Column(String,       nullable=True)
-    cat_name           = Column(String,       nullable=True)
-    cat_subcat         = Column(Integer,      nullable=True)
+    cat_code           = Column(String(length=50),        nullable=True)
+    cat_name           = Column(String(length=255),       nullable=True)
+    cat_subcat         = Column(Integer,                  nullable=True)
 
     @classmethod
     def get_subcats(cls, session, cats):
@@ -339,6 +349,21 @@ class IABSubCategory(Base):
         categ_list.extend(cats)
         return categ_list
 
+class Event(Base):
+    __tablename__ = 'event'
+
+    IMPRESSION_CAP_TOTAL   = 1
+    IMPRESSION_CAP_DAILY   = 2
+    IMPRESSION_CAP_RELEASE = 3
+
+    id                 = Column(Integer, primary_key=True, autoincrement=True)
+    type               = Column(Integer,      nullable=True)
+    ts                 = Column(BigInteger,   nullable=True)
+    flight_id          = Column(Integer, ForeignKey('flight.id'))
+    flight             = relationship("Flight", 
+                                backref=backref('events', order_by=id))
+    
+
 if __name__ == '__main__':
 
     from sqlalchemy import create_engine
@@ -347,9 +372,9 @@ if __name__ == '__main__':
     print 'SQLAlchemy tests'
 
     engine = create_engine(
-                'mysql://root:pepe123@localhost/api?charset=utf8', echo=True)
+                'mysql://root:pepe123@localhost/bu?charset=utf8', echo=True)
     Session = sessionmaker(bind=engine, autocommit=True)
-    session = Session()
+    session = Session()   
 
     f = session.query(Flight).filter(Flight.id == 398).first()
     print f.campaign.campaign_name
@@ -367,8 +392,6 @@ if __name__ == '__main__':
     print f.get_dmas()
     print f.get_domains()
     print f.get_apps()
-
     for c in f.creatives:
         print c.creative_name
-
     print IABSubCategory.get_subcats(session, ['IAB1','IAB2',])

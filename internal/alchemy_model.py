@@ -35,7 +35,7 @@ class Agent(Base):
     state                = Column(Integer,      nullable=False, default=STOPPED_STATE)
     account              = Column(String,       nullable=False)
     pacing               = Column(String,       nullable=False, default='asap')
-    # TODO impression daily + total ?
+    probability          = Column(Float(precision=2), nullable=False, default='0.5')
 
     def initialize(self, flight, conf_blob):
         self.config              = conf_blob
