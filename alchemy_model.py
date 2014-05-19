@@ -115,6 +115,7 @@ class Flight(Base):
     markdown_margin    = Column(Float,                  nullable=True)
     markup_multiplier  = Column(Float,                  nullable=True)
     campaign_category  = Column(String(length=255),     nullable=True)
+    segments           = Column(String(length=1024),    nullable=True)
     budget_type        = Column(String(length=25),      nullable=True)
 
     campaign_id        = Column(Integer, ForeignKey('campaign.id'))
