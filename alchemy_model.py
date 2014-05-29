@@ -296,13 +296,6 @@ class Flight(Base):
         return factor(self.allow_block_factor), apps
 
 
-    def update_budget(self):
-        if self.budget_type == Flight.BUDGET_TYPE_BUDGET:
-            return
-        self.budget_total = (self.impression_total * self.bid_amount) / 1000;
-        self.budget_daily = (self.impression_daily * self.bid_amount) / 1000;
-
-
 class Creative(Base):
     __tablename__ = 'creative'
     id                 = Column(Integer, primary_key=True, autoincrement=True)
