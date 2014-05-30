@@ -36,12 +36,18 @@ class Agent(Base):
     account              = Column(String,       nullable=False)
     pacing               = Column(String,       nullable=False, default='asap')
     probability          = Column(Float(precision=2), nullable=False, default='0.5')
+    budget_type          = Column(String(length=25),  nullable=False)
+    impression_daily     = Column(BigInteger,     nullable=False, default=0)
+    impression_total     = Column(BigInteger,     nullable=False, default=0)
 
     def initialize(self, flight, conf_blob):
         self.config              = conf_blob
         self.date_end            = flight.date_end.strftime('%s')
         self.date_start          = flight.date_start.strftime('%s')
         self.account = 'account_%d_%d' % (flight.campaign.id, flight.id)
+        self.budget_type         = flight.budget_type
+        self.impression_daily    = flight.impression_daily
+        self.impression_total    = flight.impression_total
         if not flight.delivery_pace:
             self.pacing = 'asap'
         else:
