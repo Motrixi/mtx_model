@@ -37,8 +37,10 @@ class Agent(Base):
     pacing               = Column(String,       nullable=False, default='asap')
     probability          = Column(Float(precision=2), nullable=False, default='0.5')
     budget_type          = Column(String(length=25),  nullable=False)
-    impression_daily     = Column(BigInteger,     nullable=False, default=0)
-    impression_total     = Column(BigInteger,     nullable=False, default=0)
+    impression_daily     = Column(BigInteger,         nullable=False, default=0)
+    impression_total     = Column(BigInteger,         nullable=False, default=0)
+    bid_amount           = Column(BigInteger,         nullable=False, default=0)
+    bid_type             = Column(String(length=5),   nullable=False, default='CPM')
 
     def initialize(self, flight, conf_blob):
         self.config              = conf_blob
@@ -48,6 +50,8 @@ class Agent(Base):
         self.budget_type         = flight.budget_type
         self.impression_daily    = flight.impression_daily
         self.impression_total    = flight.impression_total
+        self.bid_amount          = flight.bid_amount * 1000000
+        self.bid_type            = flight.bid_type
         if not flight.delivery_pace:
             self.pacing = 'asap'
         else:
