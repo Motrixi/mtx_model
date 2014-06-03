@@ -42,6 +42,7 @@ class Agent(Base):
         self.date_end            = flight.date_end.strftime('%s')
         self.date_start          = flight.date_start.strftime('%s')
         self.account = 'account_%d_%d' % (flight.campaign.id, flight.id)
+        self.probability = 0.5
         if not flight.delivery_pace:
             self.pacing = 'asap'
         else:
