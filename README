@@ -1,0 +1,19 @@
+# DB Schema Redesign
+Moving forward with the database design. We are going to rewrite the way we
+interact with the db, the models, how we keep track of the changes.
+
+## Implicaton of the changes
+We are starting from scratch, new design, new folder structure. We will use the
+knowledge acquired from previous work.
+For sure when this new structure goes into production a one time migration
+should be applied to migrate all existing data into the new structure.
+Also all other apps that are currently querying directly the database will have
+to change and start using the api.
+
+## SQLAlchemy + Alembic
+We will still use SQLAlchemy to interact with the db, each class will be related
+to a single table for now. We will try to keep it as simple as possible to avoid
+confusions and avoiding extra complexity.
+
+Alembic give us the possibility to create migrations manually or to discover
+changes directly from models definition using Base.metadata information.
