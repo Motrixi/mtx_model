@@ -17,3 +17,20 @@ confusions and avoiding extra complexity.
 
 Alembic give us the possibility to create migrations manually or to discover
 changes directly from models definition using Base.metadata information.
+
+## Directory structure
+src directory has the model definition, migrations has all the migrations
+related files. alembic.ini has the configuration for alembic, the driver
+connector should be set in there.
+
+## Alembic tips and trics
+- Configuration in alembic.ini
+  Change url accordingly.
+- Initialize
+  $ alembic init <migrations directory>
+- Create migrations from models
+  $ alembic revision --autogenerate -m "<Description message>"
+- Upgrade database
+  $ alembic upgrade <revision or head to move to the last one>
+- Downgrade database
+  $ alembic downgrade <revision or base to remove everything>
