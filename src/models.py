@@ -5,6 +5,8 @@ from sqlalchemy import Table, Column
 from sqlalchemy import ForeignKey, Integer, String, DateTime, Text
 from sqlalchemy.orm import relationship, backref
 
+from custom_types import PasswordType
+
 Base = declarative_base()
 
 
@@ -26,7 +28,7 @@ class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(length=255), nullable=False)
-    passhash = Column(String(length=255), nullable=False)
+    passhash = Column(PasswordType(length=64), nullable=False)
     first_name = Column(String(length=255), nullable=False)
     last_name = Column(String(length=255), nullable=False)
     token = Column(String(length=255), nullable=True)
