@@ -1,3 +1,5 @@
+import datetime
+
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column
 from sqlalchemy import ForeignKey, Integer, String, DateTime
@@ -29,13 +31,11 @@ class User(Base):
     last_name = Column(String(length=255), nullable=False)
     token = Column(String(length=255), nullable=True)
     status = Column(Integer, nullable=True)
-    created = Column(DateTime(), nullable=False)
+    created = Column(DateTime(), nullable=False, default=datetime.datetime.now)
     skype_id = Column(String(length=255), nullable=True)
 
     role_id = Column(Integer, ForeignKey('role.id'))
     role = relationship("Role", backref=backref('users', order_by=id))
-
-    brands = relationship('Brand', secondary=User_Brand, backref='Brand')
 
 
 class Brand(Base):
@@ -43,12 +43,12 @@ class Brand(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(length=45), nullable=False)
     domain = Column(String(length=255), nullable=False)
-    created = Column(DateTime(), nullable=False)
+    created = Column(DateTime(), nullable=False, default=datetime.datetime.now)
 
     agency_id = Column(Integer, ForeignKey('agency.id'))
     agency = relationship("Agency", backref=backref('brand', order_by=id))
 
-    users = relationship('User', secondary=User_Brand, backref='User')
+    users = relationship('User', secondary=User_Brand, backref='brands')
 
 
 class BrandOptions(Base):
@@ -67,7 +67,7 @@ class Agency(Base):
     name = Column(String(length=45), nullable=False)
     domain = Column(String(length=255), nullable=False)
     type = Column(String(length=45), nullable=False)
-    created = Column(DateTime(), nullable=False)
+    created = Column(DateTime(), nullable=False, default=datetime.datetime.now)
 
 
 class AgencyOptions(Base):
@@ -93,4 +93,4 @@ class AgencyInfo(Base):
     contact = Column(String(length=100), nullable=True)
 
     agency_id = Column(Integer, ForeignKey('agency.id'))
-    agency = relationship("Agency", backref=backref('options', order_by=id))
+    agency = relationship("Agency", backref=backref('info', order_by=id))
