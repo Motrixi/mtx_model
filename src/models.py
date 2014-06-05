@@ -2,7 +2,7 @@ import datetime
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Table, Column
-from sqlalchemy import ForeignKey, Integer, String, DateTime
+from sqlalchemy import ForeignKey, Integer, String, DateTime, Text
 from sqlalchemy.orm import relationship, backref
 
 Base = declarative_base()
@@ -94,3 +94,13 @@ class AgencyInfo(Base):
 
     agency_id = Column(Integer, ForeignKey('agency.id'))
     agency = relationship("Agency", backref=backref('info', order_by=id))
+
+
+class AuditLog(Base):
+    __tablename__ = 'auditlog'
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    event_dt = Column(DateTime, nullable=False, default=datetime.datetime.now)
+    event_type = Column(String(length=45), nullable=False)
+    object_type = Column(String(length=45), nullable=False)
+    user_id = Column(Integer, nullable=False)
+    data = Column(Text, nullable=True)
