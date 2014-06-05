@@ -31,7 +31,7 @@ class User(Base):
     last_name = Column(String(length=255), nullable=False)
     token = Column(String(length=255), nullable=True)
     status = Column(Integer, nullable=True)
-    created = Column(DateTime(), nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
     skype_id = Column(String(length=255), nullable=True)
 
     role_id = Column(Integer, ForeignKey('role.id'))
@@ -43,7 +43,7 @@ class Brand(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(length=45), nullable=False)
     domain = Column(String(length=255), nullable=False)
-    created = Column(DateTime(), nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
     agency_id = Column(Integer, ForeignKey('agency.id'))
     agency = relationship("Agency", backref=backref('brand', order_by=id))
@@ -67,7 +67,7 @@ class Agency(Base):
     name = Column(String(length=45), nullable=False)
     domain = Column(String(length=255), nullable=False)
     type = Column(String(length=45), nullable=False)
-    created = Column(DateTime(), nullable=False, default=datetime.datetime.now)
+    created = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
 
 class AgencyOptions(Base):
