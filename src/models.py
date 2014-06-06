@@ -5,6 +5,9 @@ from sqlalchemy import Table, Column
 from sqlalchemy import ForeignKey, Integer, String, DateTime, Text
 from sqlalchemy.orm import relationship, backref
 
+from itsdangerous import BadSignature, SignatureExpired, \
+    TimedJSONWebSignatureSerializer as Serializer
+
 from custom_types import PasswordType
 
 Base = declarative_base()
@@ -38,6 +41,24 @@ class User(Base):
 
     role_id = Column(Integer, ForeignKey('role.id'))
     role = relationship("Role", backref=backref('users', order_by=id))
+
+    def generate_token(self, secret_key, expires=600):
+        s = Serializer(secret_key, expires_in=expires)
+        self.token = s.dumps({'id': self.id})
+
+    @classmethod
+    def verify_credentials(cls, session, email, password):
+        total = session.query(cls).filter_by(email=email, passhash=password) \
+            .count()
+        return total == 1
+
+    @classmethod
+    def verify_token(cls, session, secret_key, token):
+        try:
+            Serializer(secret_key).loads(token)
+        except (SignatureExpired, BadSignature):
+            return False
+        return True
 
 
 class Brand(Base):
