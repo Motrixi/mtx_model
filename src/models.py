@@ -1,6 +1,8 @@
 import datetime
 
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.declarative import declarative_base as\
+    real_declarative_base
+
 from sqlalchemy import Table, Column
 from sqlalchemy import ForeignKey, Integer, String, DateTime, Text
 from sqlalchemy.orm import relationship, backref
@@ -10,7 +12,38 @@ from itsdangerous import BadSignature, SignatureExpired, \
 
 from custom_types import PasswordType
 
-Base = declarative_base()
+
+# Let's make this a class decorator
+declarative_base = lambda cls: real_declarative_base(cls=cls)
+
+
+@declarative_base
+class Base(object):
+    """
+    Add some default properties and methods to the SQLAlchemy declarative base.
+    """
+
+    @property
+    def columns(self):
+        return [c.name for c in self.__table__.columns]
+
+    @property
+    def columnitems(self):
+        res = {}
+        for column in self.columns:
+            if column in ['passhash', 'token']: #@TODO IMPROVE ME
+                continue
+            value = getattr(self, column)
+            if value.__class__ == datetime.datetime:
+                value = value.isoformat()
+            res[column] = value
+        return res
+
+    def __repr__(self):
+        return '{}({})'.format(self.__class__.__name__, self.columnitems)
+
+    def tojson(self):
+        return self.columnitems
 
 
 User_Brand = Table('user_brand',
