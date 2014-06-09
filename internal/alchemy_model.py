@@ -30,6 +30,7 @@ class Agent(Base):
     date_start           = Column(BigInteger,   nullable=False)
     daily_budget_micros  = Column(BigInteger,   nullable=False)
     total_budget_micros  = Column(BigInteger,   nullable=False)
+    last_imp_run         = Column(BigInteger,   nullable=False, default=0)
     last_budget_run      = Column(BigInteger,   nullable=False, default=0)
     spent_budget_micros  = Column(BigInteger,   nullable=False, default=0)
     state                = Column(Integer,      nullable=False, default=STOPPED_STATE)
