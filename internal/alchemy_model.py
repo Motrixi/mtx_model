@@ -35,12 +35,13 @@ class Agent(Base):
     state                = Column(Integer,      nullable=False, default=STOPPED_STATE)
     account              = Column(String,       nullable=False)
     pacing               = Column(String,       nullable=False, default='asap')
-    probability          = Column(Float(precision=3), nullable=False, default='0.5')
+    probability          = Column(Float(precision=3), nullable=False, default='0')
     budget_type          = Column(String(length=25),  nullable=False)
     impression_daily     = Column(BigInteger,         nullable=False, default=0)
     impression_total     = Column(BigInteger,         nullable=False, default=0)
     bid_amount           = Column(BigInteger,         nullable=False, default=0)
     bid_type             = Column(String(length=5),   nullable=False, default='CPM')
+    is_capped            = Column(Boolean,            nullable=False, default=False)
 
     def initialize(self, flight, conf_blob):
         self.config              = conf_blob
@@ -69,9 +70,10 @@ class Agent(Base):
         if self.budget_type == 'impression':
             self.daily_budget_micros = int(
                 self.bid_amount * self.impression_daily / 1000)
-            self.probability = 0.05
             delta = flight.date_end - flight.date_start
             self.total_budget_micros = self.daily_budget_micros * delta.days
+        else :
+            self.probability = 0.5
             
 
 class Action(Base):
