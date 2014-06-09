@@ -66,6 +66,13 @@ class Agent(Base):
         else:
             self.total_budget_micros = \
                 int('%.0f' % (flight.budget_total * 1000000))
+        if self.budget_type == 'impression':
+            self.daily_budget_micros = int(
+                self.bid_amount * self.impression_daily / 1000)
+            self.probability = 0.05
+            delta = flight.date_end - flight.date_start
+            self.total_budget_micros = self.daily_budget_micros * delta.days
+            
 
 class Action(Base):
     __tablename__ = 'action'
