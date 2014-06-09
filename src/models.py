@@ -42,6 +42,9 @@ class User(Base):
     role_id = Column(Integer, ForeignKey('role.id'))
     role = relationship("Role", backref=backref('users', order_by=id))
 
+    agency_id = Column(Integer, ForeignKey('agency.id'))
+    agency = relationship('Agency', backref=backref('users', order_by=id))
+
     def generate_token(self, secret_key, expires=600):
         s = Serializer(secret_key, expires_in=expires)
         self.token = s.dumps({'id': self.id})
