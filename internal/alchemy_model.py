@@ -35,7 +35,7 @@ class Agent(Base):
     state                = Column(Integer,      nullable=False, default=STOPPED_STATE)
     account              = Column(String,       nullable=False)
     pacing               = Column(String,       nullable=False, default='asap')
-    probability          = Column(Float(precision=2), nullable=False, default='0.5')
+    probability          = Column(Float(precision=3), nullable=False, default='0.5')
     budget_type          = Column(String(length=25),  nullable=False)
     impression_daily     = Column(BigInteger,         nullable=False, default=0)
     impression_total     = Column(BigInteger,         nullable=False, default=0)
