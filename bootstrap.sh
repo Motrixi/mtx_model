@@ -5,7 +5,7 @@ echo mysql-server-5.5 mysql-server/root_password_again password "" | sudo debcon
 sudo apt-get install -y mysql-server mysql-client python-mysqldb python-pip python-dev
 
 sudo pip install -U pip
-sudo pip install alembic
+sudo pip install alembic itsdangerous
 
 result=$(mysql -u root -s -N -e "SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME='tests'");
 if [ -z "$result" ];
