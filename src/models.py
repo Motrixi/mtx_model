@@ -72,7 +72,7 @@ class Brand(Base):
     created = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
     agency_id = Column(Integer, ForeignKey('agency.id'))
-    agency = relationship("Agency", backref=backref('brand', order_by=id))
+    agency = relationship("Agency", backref=backref('brands', order_by=id))
 
     users = relationship('User', secondary=User_Brand, backref='brands')
 
