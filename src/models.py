@@ -89,9 +89,13 @@ class User(Base):
         return total == 1
 
     @classmethod
-    def verify_token(cls, session, secret_key, token):
+    def verify_token(cls, session, secret_key, token, user):
         try:
-            Serializer(secret_key).loads(token)
+            data = Serializer(secret_key).loads(token)
+            # Not only the token has to be valid, it has to be the token for
+            # the given user
+            if data['id'] != int(user):
+                raise BadSignature('Invalid User ID')
         except (SignatureExpired, BadSignature):
             return False
         return True
