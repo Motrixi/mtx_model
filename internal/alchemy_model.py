@@ -30,19 +30,30 @@ class Agent(Base):
     date_start           = Column(BigInteger,   nullable=False)
     daily_budget_micros  = Column(BigInteger,   nullable=False)
     total_budget_micros  = Column(BigInteger,   nullable=False)
+    last_imp_run         = Column(BigInteger,   nullable=False, default=0)
     last_budget_run      = Column(BigInteger,   nullable=False, default=0)
     spent_budget_micros  = Column(BigInteger,   nullable=False, default=0)
     state                = Column(Integer,      nullable=False, default=STOPPED_STATE)
     account              = Column(String,       nullable=False)
     pacing               = Column(String,       nullable=False, default='asap')
-    probability          = Column(Float(precision=2), nullable=False, default='0.5')
+    probability          = Column(Float(precision=3), nullable=False, default='0')
+    budget_type          = Column(String(length=25),  nullable=False)
+    impression_daily     = Column(BigInteger,         nullable=False, default=0)
+    impression_total     = Column(BigInteger,         nullable=False, default=0)
+    bid_amount           = Column(BigInteger,         nullable=False, default=0)
+    bid_type             = Column(String(length=5),   nullable=False, default='CPM')
+    is_capped            = Column(Boolean,            nullable=False, default=False)
 
     def initialize(self, flight, conf_blob):
         self.config              = conf_blob
         self.date_end            = flight.date_end.strftime('%s')
         self.date_start          = flight.date_start.strftime('%s')
         self.account = 'account_%d_%d' % (flight.campaign.id, flight.id)
-        self.probability = 0.5
+        self.budget_type         = flight.budget_type
+        self.impression_daily    = flight.impression_daily
+        self.impression_total    = flight.impression_total
+        self.bid_amount          = flight.bid_amount * 1000000
+        self.bid_type            = flight.bid_type
         if not flight.delivery_pace:
             self.pacing = 'asap'
         else:
@@ -57,6 +68,14 @@ class Agent(Base):
         else:
             self.total_budget_micros = \
                 int('%.0f' % (flight.budget_total * 1000000))
+        if self.budget_type == 'impression':
+            self.daily_budget_micros = int(
+                self.bid_amount * self.impression_daily / 1000)
+            delta = flight.date_end - flight.date_start
+            self.total_budget_micros = self.daily_budget_micros * delta.days
+        else :
+            self.probability = 0.5
+            
 
 class Action(Base):
     __tablename__ = 'action'
