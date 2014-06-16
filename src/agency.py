@@ -1,8 +1,5 @@
 import datetime
 
-from sqlalchemy.ext.declarative import declarative_base as\
-    real_declarative_base
-
 from sqlalchemy import Table, Column
 from sqlalchemy import ForeignKey, Integer, String, DateTime, Text
 from sqlalchemy.orm import relationship, backref
@@ -10,47 +7,16 @@ from sqlalchemy.orm import relationship, backref
 from itsdangerous import BadSignature, SignatureExpired, \
     TimedJSONWebSignatureSerializer as Serializer
 
-from custom_types import PasswordType
-
-
-# Let's make this a class decorator
-declarative_base = lambda cls: real_declarative_base(cls=cls)
-
-
-@declarative_base
-class Base(object):
-    """
-    Add some default properties and methods to the SQLAlchemy declarative base.
-    """
-
-    @property
-    def columns(self):
-        return [c.name for c in self.__table__.columns]
-
-    @property
-    def columnitems(self):
-        res = {}
-        for column in self.columns:
-            if column in ['passhash', 'token']: #@TODO IMPROVE ME
-                continue
-            value = getattr(self, column)
-            if value.__class__ == datetime.datetime:
-                value = value.isoformat()
-            res[column] = value
-        return res
-
-    def __repr__(self):
-        return '{}({})'.format(self.__class__.__name__, self.columnitems)
-
-    def tojson(self):
-        return self.columnitems
+from custom_types import Base, PasswordType
 
 
 User_Brand = Table('user_brand',
                    Base.metadata,
                    Column('id', Integer, primary_key=True),
-                   Column('user_id', Integer, ForeignKey('user.id')),
-                   Column('brand_id', Integer, ForeignKey('brand.id')),
+                   Column('user_id', Integer, ForeignKey('user.id'),
+                          nullable=False),
+                   Column('brand_id', Integer, ForeignKey('brand.id'),
+                          nullable=False),
                    )
 
 
@@ -63,19 +29,19 @@ class Role(Base):
 class User(Base):
     __tablename__ = 'user'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    email = Column(String(length=255), nullable=False)
-    passhash = Column(PasswordType(length=64), nullable=False)
-    first_name = Column(String(length=255), nullable=False)
-    last_name = Column(String(length=255), nullable=False)
+    email = Column(String(length=255), nullable=False, unique=True)
+    passhash = Column(PasswordType(length=70), nullable=False)
+    first_name = Column(String(length=45), nullable=False)
+    last_name = Column(String(length=45), nullable=False)
     token = Column(String(length=255), nullable=True)
     status = Column(Integer, nullable=True)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now)
     skype_id = Column(String(length=255), nullable=True)
 
-    role_id = Column(Integer, ForeignKey('role.id'))
+    role_id = Column(Integer, ForeignKey('role.id'), nullable=False)
     role = relationship("Role", backref=backref('users', order_by=id))
 
-    agency_id = Column(Integer, ForeignKey('agency.id'))
+    agency_id = Column(Integer, ForeignKey('agency.id'), nullable=False)
     agency = relationship('Agency', backref=backref('users', order_by=id))
 
     def generate_token(self, secret_key, expires=600):
@@ -108,38 +74,39 @@ class Brand(Base):
     domain = Column(String(length=255), nullable=False)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
-    agency_id = Column(Integer, ForeignKey('agency.id'))
+    agency_id = Column(Integer, ForeignKey('agency.id'), nullable=False)
     agency = relationship("Agency", backref=backref('brands', order_by=id))
 
     users = relationship('User', secondary=User_Brand, backref='brands')
 
 
-class BrandOptions(Base):
-    __tablename__ = 'brand_options'
+class BrandOption(Base):
+    __tablename__ = 'brand_option'
     id = Column(Integer, primary_key=True, autoincrement=True)
     key = Column(String(length=45), nullable=False)
-    value = Column(String(length=45), nullable=True)
+    value = Column(String(length=255), nullable=False)
 
-    brand_id = Column(Integer, ForeignKey('brand.id'))
+    brand_id = Column(Integer, ForeignKey('brand.id'), nullable=False)
     brand = relationship("Brand", backref=backref('options', order_by=id))
 
 
 class Agency(Base):
     __tablename__ = 'agency'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    name = Column(String(length=45), nullable=False)
+    name = Column(String(length=255), nullable=False)
     domain = Column(String(length=255), nullable=False)
     type = Column(String(length=45), nullable=False)
+    status = Column(Integer, nullable=False)
     created = Column(DateTime, nullable=False, default=datetime.datetime.now)
 
 
-class AgencyOptions(Base):
-    __tablename__ = 'agency_options'
+class AgencyOption(Base):
+    __tablename__ = 'agency_option'
     id = Column(Integer, primary_key=True, autoincrement=True)
     key = Column(String(length=45), nullable=False)
-    value = Column(String(length=45), nullable=True)
+    value = Column(String(length=255), nullable=False)
 
-    agency_id = Column(Integer, ForeignKey('agency.id'))
+    agency_id = Column(Integer, ForeignKey('agency.id'), nullable=False)
     agency = relationship("Agency", backref=backref('options', order_by=id))
 
 
@@ -147,7 +114,7 @@ class AgencyInfo(Base):
     __tablename__ = 'agency_info'
     id = Column(Integer, primary_key=True, autoincrement=True)
     address = Column(String(length=255), nullable=False)
-    address2 = Column(String(length=255), nullable=False)
+    address2 = Column(String(length=255), nullable=True)
     city = Column(String(length=255), nullable=False)
     state = Column(String(length=30), nullable=True)
     postcode = Column(String(length=30), nullable=True)
@@ -155,7 +122,7 @@ class AgencyInfo(Base):
     phone = Column(String(length=15), nullable=True)
     contact = Column(String(length=100), nullable=True)
 
-    agency_id = Column(Integer, ForeignKey('agency.id'))
+    agency_id = Column(Integer, ForeignKey('agency.id'), nullable=False)
     agency = relationship("Agency", backref=backref('info', order_by=id))
 
 

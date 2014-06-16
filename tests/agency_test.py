@@ -4,7 +4,8 @@ import time
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import Base, User, Role
+from src.custom_types import Base
+from src.agency import User, Role, Agency
 
 
 class TestUser(unittest.TestCase):
@@ -23,16 +24,22 @@ class TestUser(unittest.TestCase):
         cls.session = cls.Session()
 
         cls.role = {'name': 'Role Name'}
+        cls.agency = {'name': 'Agency Name',
+                      'domain': 'Agency Domain',
+                      'type': 'Agency Type',
+                      'status': 1}
 
         cls.user = {'email': 'foo@bar.com',
                     'passhash': 'super secret password',
                     'first_name': 'Foo',
                     'last_name': 'Bar',
-                    'role_id': 1
+                    'role_id': 1,
+                    'agency_id': 1
                     }
 
         Base.metadata.create_all(cls.engine)
         cls.session.add(Role(**cls.role))
+        cls.session.add(Agency(**cls.agency))
         cls.session.add(User(**cls.user))
         cls.session.commit()
 
@@ -94,7 +101,8 @@ class TestUser(unittest.TestCase):
                 'passhash': 'super secret password',
                 'first_name': 'Foo',
                 'last_name': 'Bar',
-                'role_id': 1
+                'role_id': 1,
+                'agency_id': 1
                 }
         self.session.add(User(**user))
         self.session.commit()
