@@ -46,7 +46,7 @@ class User(Base):
 
     def generate_token(self, secret_key, expires=600):
         s = Serializer(secret_key, expires_in=expires)
-        self.token = s.dumps({'id': self.id})
+        self.token = s.dumps({'user_id': self.id})
 
     @classmethod
     def verify_credentials(cls, session, email, password):
@@ -55,16 +55,17 @@ class User(Base):
         return total == 1
 
     @classmethod
-    def verify_token(cls, session, secret_key, token, user):
+    def verify_token(cls, session, secret_key, token):
         try:
             data = Serializer(secret_key).loads(token)
-            # Not only the token has to be valid, it has to be the token for
-            # the given user
-            if data['id'] != int(user):
-                raise BadSignature('Invalid User ID')
+            if not 'user_id' in data:
+                raise BadSignature('Invalid Token')
+            user = session.query(User).get(data['user_id'])
+            if not user:
+                raise BadSignature('Invalid Userd Id')
+            return user
         except (SignatureExpired, BadSignature):
             return False
-        return True
 
 
 class Brand(Base):
