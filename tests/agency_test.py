@@ -77,7 +77,7 @@ class TestUser(unittest.TestCase):
         secret = 'secret'
         user = self.session.query(User).get(1)
         user.generate_token(secret, expires=10)
-        res = User.verify_token(self.session, secret, user.token, user.id)
+        res = User.verify_token(self.session, secret, user.token)
         self.assertTrue(res)
 
     def test_token_expired_token(self):
@@ -85,7 +85,7 @@ class TestUser(unittest.TestCase):
         user = self.session.query(User).get(1)
         user.generate_token(secret, expires=1)
         time.sleep(2)
-        res = User.verify_token(self.session, secret, user.token, user.id)
+        res = User.verify_token(self.session, secret, user.token)
         self.assertFalse(res)
 
     def test_token_tempered(self):
@@ -93,27 +93,7 @@ class TestUser(unittest.TestCase):
         user = self.session.query(User).get(1)
         user.generate_token(secret, expires=1)
         user.token = user.token + 'sadsl13123'
-        res = User.verify_token(self.session, secret, user.token, user.id)
-        self.assertFalse(res)
-
-    def test_token_wrong_user(self):
-        user = {'email': 'foo_2@bar.com',
-                'passhash': 'super secret password',
-                'first_name': 'Foo',
-                'last_name': 'Bar',
-                'role_id': 1,
-                'agency_id': 1
-                }
-        self.session.add(User(**user))
-        self.session.commit()
-        secret = 'secret'
-
-        user1 = self.session.query(User).get(1)
-        user1.generate_token(secret, expires=600)
-        user2 = self.session.query(User).get(2)
-        user2.generate_token(secret, expires=600)
-
-        res = User.verify_token(self.session, secret, user2.token, user1.id)
+        res = User.verify_token(self.session, secret, user.token)
         self.assertFalse(res)
 
 if __name__ == '__main__':
