@@ -58,11 +58,15 @@ class FlightOption(Base):
 class Target(Base):
     __tablename__ = 'target'
     id = Column(Integer, primary_key=True, autoincrement=True)
-    target_type = Column(Integer, nullable=False)
     target_id = Column(Integer, nullable=False)
 
     flight_id = Column(Integer, ForeignKey('flight.id'), nullable=False)
     flight = relationship("Flight", backref=backref('targets', order_by=id))
+
+    target_type_id = Column(Integer, ForeignKey('target_type.id'),
+                            nullable=False)
+    target_type = relationship("TargetType", backref=backref('targets',
+                                                             order_by=id))
 
 
 class Creative(Base):
