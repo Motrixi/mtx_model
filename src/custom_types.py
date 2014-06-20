@@ -15,7 +15,7 @@ class Base(object):
     Add some default properties and methods to the SQLAlchemy declarative base.
     """
     __table_args__ = {'mysql_engine': 'InnoDB'}
-    hide_columns = []  # Columns that won't be shown when calling tojson
+    hide_columns = []  # Columns that won't be shown when calling todict
 
     @property
     def columns(self):
@@ -35,7 +35,7 @@ class Base(object):
     def __repr__(self):
         return '{}({})'.format(self.__class__.__name__, self.columnitems)
 
-    def tojson(self):
+    def todict(self):
         return self.columnitems
 
 

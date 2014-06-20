@@ -139,14 +139,14 @@ class TestHiddenColumns(unittest.TestCase):
 
     def test_hidden_columns(self):
         user = self.session.query(User).get(1)
-        data = user.tojson()
+        data = user.todict()
         self.assertNotIn('token', data)
         self.assertNotIn('passhash', data)
 
     def test_force_show(self):
         user = self.session.query(User).get(1)
         user.hide_columns = []
-        data = user.tojson()
+        data = user.todict()
         self.assertIn('token', data)
         self.assertIn('passhash', data)
 
