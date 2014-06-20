@@ -15,6 +15,7 @@ class Base(object):
     Add some default properties and methods to the SQLAlchemy declarative base.
     """
     __table_args__ = {'mysql_engine': 'InnoDB'}
+    hide_columns = []  # Columns that won't be shown when calling tojson
 
     @property
     def columns(self):
@@ -24,12 +25,11 @@ class Base(object):
     def columnitems(self):
         res = {}
         for column in self.columns:
-            if column in ['passhash', 'token']:  # @TODO IMPROVE ME
-                continue
-            value = getattr(self, column)
-            if value.__class__ == datetime.datetime:
-                value = value.isoformat()
-            res[column] = value
+            if column not in self.hide_columns:
+                value = getattr(self, column)
+                if value.__class__ == datetime.datetime:
+                    value = value.isoformat()
+                res[column] = value
         return res
 
     def __repr__(self):

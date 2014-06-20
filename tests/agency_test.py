@@ -96,5 +96,60 @@ class TestUser(unittest.TestCase):
         res = User.verify_token(self.session, secret, user.token)
         self.assertFalse(res)
 
+
+class TestHiddenColumns(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        engine = create_engine('mysql://root@localhost/')
+        conn = engine.connect()
+        conn.execute('commit')
+        conn.execute('DROP DATABASE IF EXISTS tests')
+        conn.execute('CREATE DATABASE tests')
+        conn.close()
+
+        cls.engine = create_engine('mysql://root@localhost/tests')
+        cls.Session = sessionmaker(bind=cls.engine)
+        cls.session = cls.Session()
+
+        cls.role = {'name': 'Role Name'}
+        cls.agency = {'name': 'Agency Name',
+                      'domain': 'Agency Domain',
+                      'type': 'Agency Type',
+                      'status': 1}
+
+        cls.user = {'email': 'foo@bar.com',
+                    'passhash': 'super secret password',
+                    'first_name': 'Foo',
+                    'last_name': 'Bar',
+                    'role_id': 1,
+                    'agency_id': 1
+                    }
+
+        Base.metadata.create_all(cls.engine)
+        cls.session.add(Role(**cls.role))
+        cls.session.add(Agency(**cls.agency))
+        cls.session.add(User(**cls.user))
+        cls.session.commit()
+
+    @classmethod
+    def tearDownClass(cls):
+        # Close all active transactions
+        cls.session.commit()
+        Base.metadata.drop_all(cls.engine)
+
+    def test_hidden_columns(self):
+        user = self.session.query(User).get(1)
+        data = user.tojson()
+        self.assertNotIn('token', data)
+        self.assertNotIn('passhash', data)
+
+    def test_force_show(self):
+        user = self.session.query(User).get(1)
+        user.hide_columns = []
+        data = user.tojson()
+        self.assertIn('token', data)
+        self.assertIn('passhash', data)
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -28,6 +28,7 @@ class Role(Base):
 
 class User(Base):
     __tablename__ = 'user'
+    hide_columns = ['passhash', 'token']
     id = Column(Integer, primary_key=True, autoincrement=True)
     email = Column(String(length=255), nullable=False, unique=True)
     passhash = Column(PasswordType(length=70), nullable=False)
