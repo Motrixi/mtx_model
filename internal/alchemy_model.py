@@ -4,6 +4,7 @@ from sqlalchemy import Column, Integer, String, Float, BigInteger, Text,\
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, backref
 import sys
+import datetime
 
 sys.path.append('../../')
 
@@ -45,33 +46,37 @@ class Agent(Base):
     is_capped            = Column(Boolean,            nullable=False, default=False)
 
     def initialize(self, flight, conf_blob):
+        self.account = 'account_%d_%d' % (flight['campaign_id'], flight['id'])
         self.config              = conf_blob
-        self.date_end            = flight.date_end.strftime('%s')
-        self.date_start          = flight.date_start.strftime('%s')
-        self.account = 'account_%d_%d' % (flight.campaign.id, flight.id)
-        self.budget_type         = flight.budget_type
-        self.impression_daily    = flight.impression_daily
-        self.impression_total    = flight.impression_total
-        self.bid_amount          = flight.bid_amount * 1000000
-        self.bid_type            = flight.bid_type
-        if not flight.delivery_pace:
+        self.date_end            = datetime.datetime.strptime(
+                                        flight['end_date'], '%Y-%m-%dT%H:%M:%S')
+        self.date_start          = datetime.datetime.strptime(
+                                        flight['start_date'], '%Y-%m-%dT%H:%M:%S')        
+        self.budget_type         = flight['budget_type']['name']
+        self.impression_daily    = flight['impression_daily']
+        self.impression_total    = flight['impression_total']
+        self.bid_amount          = flight['bid_amount'] * 1000000
+        self.bid_type            = flight['bid_type']['name']
+
+        if not flight['pacing_type']:
             self.pacing = 'asap'
         else:
-            self.pacing = flight.delivery_pace.lower()
-        if not flight.budget_daily:
+            self.pacing = flight['pacing_type']['name'].lower()
+
+        if not flight['budget_daily']:
             self.daily_budget_micros = 0
         else:
             self.daily_budget_micros = \
-                int('%.0f' % (flight.budget_daily * 1000000))
-        if not flight.budget_total:
+                int('%.0f' % (flight['budget_daily'] * 1000000))
+        if not flight['budget_total']:
             self.total_budget_micros = 0
         else:
             self.total_budget_micros = \
-                int('%.0f' % (flight.budget_total * 1000000))
+                int('%.0f' % (flight['budget_total'] * 1000000))
         if self.budget_type == 'impression':
             self.daily_budget_micros = int(
                 self.bid_amount * self.impression_daily / 1000)
-            delta = flight.date_end - flight.date_start
+            delta = self.date_end - self.date_start
             self.total_budget_micros = self.daily_budget_micros * delta.days
         else :
             self.probability = 0.5
