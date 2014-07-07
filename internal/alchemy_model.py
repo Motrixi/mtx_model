@@ -48,10 +48,10 @@ class Agent(Base):
     def initialize(self, flight, conf_blob):
         self.account = 'account_%d_%d' % (flight['campaign_id'], flight['id'])
         self.config              = conf_blob
-        self.date_end            = datetime.datetime.strptime(
-                                        flight['end_date'], '%Y-%m-%dT%H:%M:%S')
-        self.date_start          = datetime.datetime.strptime(
-                                        flight['start_date'], '%Y-%m-%dT%H:%M:%S')        
+        self.date_end            = int(datetime.datetime.strptime(
+                                        flight['end_date'], '%Y-%m-%dT%H:%M:%S').strftime('%s'))
+        self.date_start          = int(datetime.datetime.strptime(
+                                        flight['start_date'], '%Y-%m-%dT%H:%M:%S').strftime('%s'))
         self.budget_type         = flight['budget_type']['name']
         self.impression_daily    = flight['impression_daily']
         self.impression_total    = flight['impression_total']
