@@ -80,7 +80,10 @@ class Agent(Base):
             self.total_budget_micros = self.daily_budget_micros * delta.days
         else :
             self.probability = 0.5
-            
+        if not self.impression_daily:
+            self.impression_daily = 0
+        if not self.impression_total:
+            self.impression_total = 0
 
 class Action(Base):
     __tablename__ = 'action'
