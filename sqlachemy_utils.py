@@ -6,7 +6,7 @@ Created on 05/05/2014
 from contextlib import contextmanager
 
 @contextmanager
-def Session_Commiter(SessionFactory):
+def SessionCommiter(SessionFactory):
     """Provide a transactional scope around a series of operations.The 
     SessionFactory must be a class constructed from a sessionmaker.
     After it goes out of scope it commit the transactions (or rollback 
@@ -24,7 +24,7 @@ def Session_Commiter(SessionFactory):
 
 
 @contextmanager
-def Session_Closer(SessionFactory):
+def SessionCloser(SessionFactory):
     """ SessionFactory must be a class constructed from a sessionmaker.
     After it goes out of scope it close session."""
     
