@@ -76,7 +76,9 @@ class Agent(Base):
         if self.budget_type == 'impression':
             self.daily_budget_micros = int(
                 self.bid_amount * self.impression_daily / 1000)
-            delta = self.date_end - self.date_start
+            start = datetime.datetime.strptime(flight['start_date'], '%Y-%m-%dT%H:%M:%S')
+            end = datetime.datetime.strptime(flight['end_date'], '%Y-%m-%dT%H:%M:%S')
+            delta = end - start
             self.total_budget_micros = self.daily_budget_micros * delta.days
         else :
             self.probability = 0.5
